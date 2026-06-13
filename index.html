@@ -7,104 +7,105 @@
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; background: #F0F4F8; min-height: 100vh; }
-
-/* ── 頂部 ── */
-.topbar { background: #185FA5; color: #fff; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+.topbar { background: #185FA5; color: #fff; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
 .topbar h1 { font-size: 16px; font-weight: 500; }
 .topbar p { font-size: 12px; opacity: 0.75; margin-top: 2px; }
-.top-right { display: flex; gap: 8px; }
 .top-btn { font-size: 12px; padding: 6px 14px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.4); color: #fff; background: transparent; cursor: pointer; }
 .top-btn:hover { background: rgba(255,255,255,0.15); }
 .top-btn.primary { background: #fff; color: #185FA5; border-color: #fff; font-weight: 500; }
 
-/* ── 統計列 ── */
-.stats-bar { display: flex; gap: 10px; padding: 14px 20px; flex-wrap: wrap; }
-.stat { background: #fff; border-radius: 8px; padding: 10px 16px; flex: 1; min-width: 100px; border: 0.5px solid #e0e0e0; }
-.stat-lbl { font-size: 11px; color: #888; margin-bottom: 3px; }
-.stat-val { font-size: 22px; font-weight: 500; }
+.settings-bar { padding: 10px 20px; background: #fff; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.settings-bar label { font-size: 12px; color: #555; white-space: nowrap; }
+.settings-bar input { flex: 1; min-width: 220px; font-size: 12px; padding: 7px 10px; border: 1px solid #ddd; border-radius: 6px; }
+.settings-bar input:focus { outline: none; border-color: #185FA5; }
+.save-btn { font-size: 12px; padding: 7px 16px; background: #185FA5; color: #fff; border: none; border-radius: 6px; cursor: pointer; white-space: nowrap; }
+.save-btn:hover { background: #0C447C; }
 
-/* ── 總表 ── */
-.table-wrap { padding: 0 20px 20px; overflow-x: auto; }
-.tbl { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; border: 0.5px solid #e0e0e0; }
-.tbl th { padding: 10px 8px; font-size: 12px; font-weight: 500; color: #fff; background: #185FA5; text-align: center; white-space: nowrap; border-right: 1px solid rgba(255,255,255,0.2); }
-.tbl th:first-child { text-align: left; padding-left: 16px; min-width: 70px; border-right: 1px solid rgba(255,255,255,0.3); }
+.sync-bar { padding: 8px 20px; background: #EAF3DE; border-bottom: 1px solid #C0DD97; display: none; align-items: center; gap: 8px; font-size: 12px; color: #27500A; }
+.sync-bar.show { display: flex; }
+.sync-spinner { width: 14px; height: 14px; border: 2px solid #97C459; border-top-color: #3B6D11; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.stats-bar { display: flex; gap: 8px; padding: 12px 20px; flex-wrap: wrap; }
+.stat { background: #fff; border-radius: 8px; padding: 10px 14px; flex: 1; min-width: 90px; border: 0.5px solid #e0e0e0; }
+.stat-lbl { font-size: 11px; color: #888; margin-bottom: 3px; }
+.stat-val { font-size: 20px; font-weight: 500; }
+
+.legend { display: flex; gap: 14px; padding: 4px 20px 10px; flex-wrap: wrap; }
+.leg { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #666; }
+.leg-dot { width: 12px; height: 12px; border-radius: 3px; }
+
+.table-wrap { padding: 0 20px 24px; overflow-x: auto; }
+.tbl { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; border: 0.5px solid #e0e0e0; min-width: 600px; }
+.tbl th { padding: 10px 6px; font-size: 11px; font-weight: 500; color: #fff; background: #185FA5; text-align: center; white-space: nowrap; border-right: 1px solid rgba(255,255,255,0.2); }
+.tbl th:first-child { text-align: left; padding-left: 14px; min-width: 60px; }
 .tbl td { padding: 0; border-bottom: 0.5px solid #eee; border-right: 0.5px solid #eee; vertical-align: middle; }
-.tbl td:first-child { padding: 10px 16px; font-size: 13px; font-weight: 500; color: #185FA5; background: #F0F7FF; border-right: 1px solid #ddd; white-space: nowrap; }
+.tbl td:first-child { padding: 10px 14px; font-size: 13px; font-weight: 500; color: #185FA5; background: #F0F7FF; border-right: 1px solid #ddd; white-space: nowrap; }
 .tbl tr:last-child td { border-bottom: none; }
 
-/* ── 格子 ── */
-.cell { width: 100%; min-height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; cursor: pointer; padding: 6px 4px; transition: background 0.12s; position: relative; }
-.cell:hover { filter: brightness(0.94); }
+.cell { width: 100%; min-height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; padding: 6px 4px; transition: filter 0.1s; }
+.cell:hover { filter: brightness(0.92); }
 .cell.uploaded { background: #EAF3DE; }
 .cell.pending { background: #FCEBEB; }
 .cell.review { background: #FAEEDA; }
-.cell-icon { font-size: 16px; }
-.cell-label { font-size: 10px; font-weight: 500; }
-.cell.uploaded .cell-label { color: #27500A; }
-.cell.pending .cell-label { color: #791F1F; }
-.cell.review .cell-label { color: #633806; }
-.cell-count { font-size: 9px; color: #888; }
+.cell.loading { background: #F1EFE8; }
+.cell-icon { font-size: 15px; }
+.cell-lbl { font-size: 10px; font-weight: 500; }
+.cell.uploaded .cell-lbl { color: #27500A; }
+.cell.pending .cell-lbl { color: #791F1F; }
+.cell.review .cell-lbl { color: #633806; }
+.cell.loading .cell-lbl { color: #888; }
+.cell-cnt { font-size: 9px; color: #888; }
 
-/* ── 進度欄 ── */
-.prog-cell { padding: 8px 10px !important; background: #fff !important; }
+.prog-cell { padding: 8px 10px !important; background: #fff !important; min-width: 70px; }
 .prog-bar { height: 6px; background: #eee; border-radius: 99px; overflow: hidden; margin-bottom: 3px; }
-.prog-fill { height: 100%; border-radius: 99px; transition: width 0.3s; }
+.prog-fill { height: 100%; border-radius: 99px; }
 .prog-pct { font-size: 11px; font-weight: 500; text-align: center; }
 
-/* ── Modal 遮罩 ── */
+/* Modal */
 .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; padding: 16px; }
 .overlay.open { display: flex; }
-.modal { background: #fff; border-radius: 12px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; }
-.modal-header { padding: 16px 20px 12px; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: #fff; z-index: 1; }
+.modal { background: #fff; border-radius: 12px; width: 100%; max-width: 500px; max-height: 88vh; overflow-y: auto; }
+.modal-header { padding: 16px 20px 12px; border-bottom: 1px solid #eee; display: flex; align-items: flex-start; justify-content: space-between; position: sticky; top: 0; background: #fff; }
 .modal-title { font-size: 15px; font-weight: 500; }
 .modal-sub { font-size: 12px; color: #888; margin-top: 2px; }
-.modal-close { font-size: 20px; color: #888; background: none; border: none; cursor: pointer; padding: 0 4px; line-height: 1; }
-.modal-body { padding: 16px 20px; }
+.modal-close { font-size: 22px; color: #aaa; background: none; border: none; cursor: pointer; line-height: 1; margin-left: 10px; flex-shrink: 0; }
+.modal-body { padding: 16px 20px 20px; }
 
-/* ── 파일 리스트 ── */
-.file-entry { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 0.5px solid #e0e0e0; border-radius: 8px; margin-bottom: 8px; background: #fafafa; }
-.file-entry-icon { font-size: 20px; flex-shrink: 0; }
-.file-entry-info { flex: 1; min-width: 0; }
-.file-entry-name { font-size: 13px; color: #222; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.file-entry-meta { font-size: 11px; color: #888; margin-top: 2px; }
-.file-entry-actions { display: flex; gap: 6px; flex-shrink: 0; }
-.fa-btn { font-size: 11px; padding: 4px 10px; border-radius: 6px; border: 0.5px solid #ddd; background: #fff; color: #444; cursor: pointer; text-decoration: none; white-space: nowrap; }
-.fa-btn:hover { background: #f0f0f0; }
-.fa-btn.blue { border-color: #185FA5; color: #185FA5; }
-.no-file { text-align: center; padding: 24px; color: #aaa; font-size: 13px; }
+.file-entry { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 0.5px solid #e0e0e0; border-radius: 8px; margin-bottom: 8px; }
+.fe-icon { font-size: 20px; flex-shrink: 0; }
+.fe-info { flex: 1; min-width: 0; }
+.fe-name { font-size: 13px; color: #222; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fe-meta { font-size: 11px; color: #888; margin-top: 2px; }
+.fe-open { font-size: 12px; padding: 5px 12px; border-radius: 6px; border: 1px solid #185FA5; color: #185FA5; background: #fff; cursor: pointer; text-decoration: none; white-space: nowrap; flex-shrink: 0; }
+.fe-open:hover { background: #E6F1FB; }
+.no-file { text-align: center; padding: 24px 0; color: #aaa; font-size: 13px; }
+.loading-files { text-align: center; padding: 20px 0; color: #888; font-size: 13px; }
 
-/* ── 上傳區 ── */
-.upload-zone { border: 2px dashed #B5D4F4; border-radius: 8px; padding: 20px; text-align: center; cursor: pointer; position: relative; margin-top: 12px; }
+.upload-zone { border: 2px dashed #B5D4F4; border-radius: 8px; padding: 22px 16px; text-align: center; cursor: pointer; position: relative; margin-top: 14px; }
 .upload-zone:hover { background: #EBF4FD; }
 .upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-.upload-zone-main { font-size: 13px; color: #185FA5; font-weight: 500; margin-top: 6px; }
-.upload-zone-sub { font-size: 11px; color: #aaa; margin-top: 3px; }
-.queued-files { margin-top: 10px; display: flex; flex-direction: column; gap: 5px; }
-.qf { display: flex; align-items: center; gap: 8px; font-size: 12px; background: #E6F1FB; border-radius: 6px; padding: 6px 10px; }
-.qf-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #0C447C; }
-.qf-rm { background: none; border: none; color: #A32D2D; cursor: pointer; font-size: 14px; }
+.uz-icon { font-size: 26px; }
+.uz-main { font-size: 13px; color: #185FA5; font-weight: 500; margin-top: 6px; }
+.uz-sub { font-size: 11px; color: #aaa; margin-top: 3px; }
 
-.upload-btn { width: 100%; margin-top: 12px; padding: 11px; background: #185FA5; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; }
+.queued { margin-top: 10px; display: flex; flex-direction: column; gap: 5px; }
+.qf { display: flex; align-items: center; gap: 8px; font-size: 12px; background: #E6F1FB; border-radius: 6px; padding: 7px 10px; }
+.qf-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #0C447C; }
+.qf-size { font-size: 11px; color: #666; flex-shrink: 0; }
+.qf-rm { background: none; border: none; color: #A32D2D; cursor: pointer; font-size: 15px; flex-shrink: 0; }
+
+.upload-btn { width: 100%; margin-top: 12px; padding: 12px; background: #185FA5; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; }
 .upload-btn:hover { background: #0C447C; }
 .upload-btn:disabled { background: #aaa; cursor: not-allowed; }
-.prog-row { margin-top: 10px; }
+
+.prog-row { margin-top: 10px; display: none; }
 .prog-bar2 { height: 7px; background: #eee; border-radius: 99px; overflow: hidden; }
 .prog-fill2 { height: 100%; background: #185FA5; border-radius: 99px; width: 0; transition: width 0.3s; }
 .prog-txt2 { font-size: 11px; color: #666; margin-top: 5px; text-align: center; }
-.result-msg { margin-top: 10px; padding: 10px 14px; border-radius: 8px; font-size: 13px; line-height: 1.5; }
-.result-msg.ok { background: #EAF3DE; border: 1px solid #97C459; color: #27500A; }
-.result-msg.err { background: #FCEBEB; border: 1px solid #F09595; color: #791F1F; }
-
-/* ── Script URL 設定列 ── */
-.settings-bar { padding: 10px 20px; background: #fff; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.settings-bar label { font-size: 12px; color: #555; white-space: nowrap; }
-.settings-bar input { flex: 1; min-width: 200px; font-size: 12px; padding: 6px 10px; border: 1px solid #ddd; border-radius: 6px; }
-.settings-bar input:focus { outline: none; border-color: #185FA5; }
-.save-btn { font-size: 12px; padding: 6px 14px; background: #185FA5; color: #fff; border: none; border-radius: 6px; cursor: pointer; white-space: nowrap; }
-
-.legend { display: flex; gap: 14px; padding: 8px 20px 0; flex-wrap: wrap; }
-.leg { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #666; }
-.leg-dot { width: 12px; height: 12px; border-radius: 3px; }
+.result-msg { margin-top: 10px; padding: 10px 14px; border-radius: 8px; font-size: 13px; line-height: 1.5; display: none; }
+.result-msg.ok { display: block; background: #EAF3DE; border: 1px solid #97C459; color: #27500A; }
+.result-msg.err { display: block; background: #FCEBEB; border: 1px solid #F09595; color: #791F1F; }
 </style>
 </head>
 <body>
@@ -112,50 +113,54 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, 
 <div class="topbar">
   <div>
     <h1>📂 115學年 學校行政資料總表</h1>
-    <p>物理治療科教學組 · 點格子可查看/上傳檔案</p>
+    <p id="lastSyncTxt">尚未同步 · 請先填入 Apps Script 網址</p>
   </div>
-  <div class="top-right">
-    <button class="top-btn" onclick="syncAll()">🔄 同步狀態</button>
-    <button class="top-btn primary" onclick="document.getElementById('scriptUrlInput').focus()">⚙ 設定網址</button>
+  <div style="display:flex;gap:8px;">
+    <button class="top-btn" onclick="loadStatus()">🔄 同步狀態</button>
   </div>
 </div>
 
 <div class="settings-bar">
-  <label>Apps Script 網址：</label>
-  <input type="text" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/YOUR_ID/exec" value="">
-  <button class="save-btn" onclick="saveScriptUrl()">儲存</button>
+  <label>⚙ Apps Script 網址：</label>
+  <input type="text" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/YOUR_ID/exec">
+  <button class="save-btn" onclick="saveAndLoad()">儲存並同步</button>
+</div>
+
+<div class="sync-bar" id="syncBar">
+  <div class="sync-spinner"></div>
+  <span id="syncMsg">從 Google 試算表載入最新狀態…</span>
 </div>
 
 <div class="stats-bar">
-  <div class="stat"><div class="stat-lbl">合作學校</div><div class="stat-val" style="color:#185FA5" id="st-schools">10</div></div>
-  <div class="stat"><div class="stat-lbl">文件格數</div><div class="stat-val" style="color:#444" id="st-total">70</div></div>
-  <div class="stat"><div class="stat-lbl">已上傳</div><div class="stat-val" style="color:#3B6D11" id="st-up">0</div></div>
-  <div class="stat"><div class="stat-lbl">待上傳</div><div class="stat-val" style="color:#A32D2D" id="st-pend">70</div></div>
-  <div class="stat"><div class="stat-lbl">整體完成</div><div class="stat-val" style="color:#854F0B" id="st-pct">0%</div></div>
+  <div class="stat"><div class="stat-lbl">合作學校</div><div class="stat-val" style="color:#185FA5">10</div></div>
+  <div class="stat"><div class="stat-lbl">已上傳</div><div class="stat-val" style="color:#3B6D11" id="st-up">—</div></div>
+  <div class="stat"><div class="stat-lbl">待上傳</div><div class="stat-val" style="color:#A32D2D" id="st-pend">—</div></div>
+  <div class="stat"><div class="stat-lbl">整體完成</div><div class="stat-val" style="color:#854F0B" id="st-pct">—</div></div>
 </div>
 
 <div class="legend">
   <div class="leg"><div class="leg-dot" style="background:#EAF3DE;border:1px solid #97C459"></div>已上傳</div>
   <div class="leg"><div class="leg-dot" style="background:#FCEBEB;border:1px solid #F09595"></div>待上傳</div>
   <div class="leg"><div class="leg-dot" style="background:#FAEEDA;border:1px solid #FAC775"></div>審核中</div>
+  <div class="leg" style="margin-left:auto;font-size:11px;color:#888;">點格子可查看 / 上傳檔案</div>
 </div>
 
-<div class="table-wrap" style="margin-top:12px;">
-  <table class="tbl" id="mainTable">
+<div class="table-wrap">
+  <table class="tbl">
     <thead id="tblHead"></thead>
     <tbody id="tblBody"></tbody>
   </table>
 </div>
 
 <!-- Modal -->
-<div class="overlay" id="overlay" onclick="closeModal(event)">
-  <div class="modal" id="modal">
+<div class="overlay" id="overlay" onclick="closeOverlay(event)">
+  <div class="modal">
     <div class="modal-header">
       <div>
         <div class="modal-title" id="modalTitle"></div>
         <div class="modal-sub" id="modalSub"></div>
       </div>
-      <button class="modal-close" onclick="closeOverlay()">✕</button>
+      <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-body" id="modalBody"></div>
   </div>
@@ -163,245 +168,217 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, 
 
 <script>
 const SCHOOLS = ['高醫','中山','慈濟','亞大','義守','弘光','輔英','慈惠','樹人','仁德'];
-const CATEGORIES = ['實習合約','實習名單','實習手冊','實習費用','學校座談會','實習成績寄發','其它'];
-const CAT_ICONS = { '實習合約':'📄','實習名單':'👥','實習手冊':'📘','實習費用':'💰','學校座談會':'🗣️','實習成績寄發':'📮','其它':'📁' };
+const CATS = ['實習合約','實習名單','實習手冊','實習費用','學校座談會','實習成績寄發','其它'];
+const ICONS = {'實習合約':'📄','實習名單':'👥','實習手冊':'📘','實習費用':'💰','學校座談會':'🗣️','實習成績寄發':'📮','其它':'📁'};
 
-// 狀態資料（格式：status, files[]）
-let data = {};
+let sheetData = {};   // 從試算表取得的狀態
 let queuedFiles = [];
 let currentCell = null;
-let scriptUrl = localStorage.getItem('scriptUrl') || '';
+let scriptUrl = localStorage.getItem('pt115_scriptUrl') || '';
 
-// 初始化資料
-SCHOOLS.forEach(s => {
-  data[s] = {};
-  CATEGORIES.forEach(c => { data[s][c] = { status: 'pending', files: [] }; });
-});
-
-// 載入已儲存的狀態
-function loadData() {
-  const saved = localStorage.getItem('pt115data');
-  if (saved) {
-    try {
-      const parsed = JSON.parse(saved);
-      SCHOOLS.forEach(s => {
-        CATEGORIES.forEach(c => {
-          if (parsed[s] && parsed[s][c]) data[s][c] = parsed[s][c];
-        });
-      });
-    } catch(e) {}
-  }
-  if (scriptUrl) document.getElementById('scriptUrlInput').value = scriptUrl;
-}
-
-function saveData() {
-  localStorage.setItem('pt115data', JSON.stringify(data));
-}
-
-function saveScriptUrl() {
-  scriptUrl = document.getElementById('scriptUrlInput').value.trim();
-  localStorage.setItem('scriptUrl', scriptUrl);
-  alert('✅ 網址已儲存！');
-}
-
-// 建立表格
-function renderTable() {
-  // 標題列
+// 初始化表格（空殼）
+function initTable() {
   const head = document.getElementById('tblHead');
-  head.innerHTML = '<tr><th>學校</th>' + CATEGORIES.map(c => `<th>${CAT_ICONS[c]}<br>${c}</th>`).join('') + '<th>進度</th></tr>';
+  head.innerHTML = '<tr><th>學校</th>' + CATS.map(c=>`<th>${ICONS[c]}<br>${c}</th>`).join('') + '<th>進度</th></tr>';
+  renderTable();
+}
 
-  // 資料列
+// 渲染表格（依 sheetData）
+function renderTable() {
   const body = document.getElementById('tblBody');
   body.innerHTML = '';
+  let totalUp = 0;
+
   SCHOOLS.forEach(school => {
     const tr = document.createElement('tr');
-    let uploadedCount = 0;
-
     let html = `<td>${school}</td>`;
-    CATEGORIES.forEach(cat => {
-      const cell = data[school][cat];
-      const statusClass = cell.status === 'uploaded' ? 'uploaded' : cell.status === 'review' ? 'review' : 'pending';
-      const statusLabel = cell.status === 'uploaded' ? '已上傳' : cell.status === 'review' ? '審核中' : '待上傳';
-      const fileCount = cell.files.length;
-      if (cell.status === 'uploaded') uploadedCount++;
+    let schoolUp = 0;
 
-      html += `<td><div class="cell ${statusClass}" onclick="openCell('${school}','${cat}')">
-        <span class="cell-icon">${CAT_ICONS[cat]}</span>
-        <span class="cell-label">${statusLabel}</span>
-        ${fileCount > 0 ? `<span class="cell-count">${fileCount}個檔案</span>` : ''}
+    CATS.forEach(cat => {
+      const raw = sheetData[school] ? (sheetData[school][cat] || '') : '';
+      const isLoading = Object.keys(sheetData).length === 0;
+      let cls, lbl;
+      if (isLoading) { cls = 'loading'; lbl = '載入中'; }
+      else if (raw === '已上傳') { cls = 'uploaded'; lbl = '已上傳'; schoolUp++; totalUp++; }
+      else if (raw === '審核中') { cls = 'review'; lbl = '審核中'; }
+      else { cls = 'pending'; lbl = '待上傳'; }
+
+      html += `<td><div class="cell ${cls}" onclick="openCell('${school}','${cat}')">
+        <span class="cell-icon">${ICONS[cat]}</span>
+        <span class="cell-lbl">${lbl}</span>
       </div></td>`;
     });
 
-    // 進度欄
-    const pct = Math.round(uploadedCount / CATEGORIES.length * 100);
-    const fillColor = pct === 100 ? '#639922' : pct >= 50 ? '#BA7517' : '#A32D2D';
+    const pct = Math.round(schoolUp / CATS.length * 100);
+    const fc = pct===100?'#639922':pct>=50?'#BA7517':'#A32D2D';
     html += `<td class="prog-cell">
-      <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${fillColor}"></div></div>
-      <div class="prog-pct" style="color:${fillColor}">${pct}%</div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${fc}"></div></div>
+      <div class="prog-pct" style="color:${fc}">${pct}%</div>
     </td>`;
-
     tr.innerHTML = html;
     body.appendChild(tr);
   });
 
-  updateStats();
+  const total = SCHOOLS.length * CATS.length;
+  document.getElementById('st-up').textContent = totalUp;
+  document.getElementById('st-pend').textContent = total - totalUp;
+  document.getElementById('st-pct').textContent = Math.round(totalUp/total*100) + '%';
 }
 
-function updateStats() {
-  let up = 0, pend = 0;
-  const total = SCHOOLS.length * CATEGORIES.length;
-  SCHOOLS.forEach(s => CATEGORIES.forEach(c => {
-    if (data[s][c].status === 'uploaded') up++;
-    else pend++;
-  }));
-  document.getElementById('st-total').textContent = total;
-  document.getElementById('st-up').textContent = up;
-  document.getElementById('st-pend').textContent = pend;
-  document.getElementById('st-pct').textContent = Math.round(up / total * 100) + '%';
+// 從 Apps Script 載入狀態
+async function loadStatus() {
+  if (!scriptUrl) { alert('請先填入並儲存 Apps Script 網址'); return; }
+  showSync('從 Google 試算表載入最新狀態…');
+  try {
+    const res = await fetch(scriptUrl + '?action=status');
+    const json = await res.json();
+    if (json.status === 'ok') {
+      sheetData = json.data;
+      renderTable();
+      const now = new Date().toLocaleTimeString('zh-TW');
+      document.getElementById('lastSyncTxt').textContent = `最後同步：${now}`;
+      hideSync();
+    } else throw new Error(json.message);
+  } catch(err) {
+    hideSync();
+    alert('同步失敗：' + err.message + '\n\n請確認 Apps Script 已部署為「任何人可存取」的網頁應用程式。');
+  }
 }
+
+function saveAndLoad() {
+  scriptUrl = document.getElementById('scriptUrlInput').value.trim();
+  if (!scriptUrl) { alert('請輸入 Apps Script 網址'); return; }
+  localStorage.setItem('pt115_scriptUrl', scriptUrl);
+  loadStatus();
+}
+
+function showSync(msg) {
+  document.getElementById('syncMsg').textContent = msg;
+  document.getElementById('syncBar').classList.add('show');
+}
+function hideSync() { document.getElementById('syncBar').classList.remove('show'); }
 
 // 開啟格子 Modal
-function openCell(school, cat) {
+async function openCell(school, cat) {
   currentCell = { school, cat };
   queuedFiles = [];
   document.getElementById('modalTitle').textContent = `${school} ／ ${cat}`;
-  document.getElementById('modalSub').textContent = '查看已上傳檔案，或上傳新文件';
-  renderModalBody();
+  document.getElementById('modalSub').textContent = '從 Google Drive 載入檔案清單…';
   document.getElementById('overlay').classList.add('open');
-}
 
-function renderModalBody() {
-  const { school, cat } = currentCell;
-  const cell = data[school][cat];
-  const body = document.getElementById('modalBody');
+  // 先顯示 loading
+  document.getElementById('modalBody').innerHTML = '<div class="loading-files">⏳ 載入中…</div>';
 
-  // 已有檔案
-  let fileListHtml = '';
-  if (cell.files.length > 0) {
-    fileListHtml = cell.files.map((f, i) => `
-      <div class="file-entry">
-        <span class="file-entry-icon">${getIcon(f.name)}</span>
-        <div class="file-entry-info">
-          <div class="file-entry-name">${f.name}</div>
-          <div class="file-entry-meta">${f.date} · ${f.size}</div>
-        </div>
-        <div class="file-entry-actions">
-          ${f.url ? `<a class="fa-btn blue" href="${f.url}" target="_blank">開啟</a>` : ''}
-          <button class="fa-btn" onclick="removeFileEntry(${i})">刪除</button>
-        </div>
-      </div>
-    `).join('');
-  } else {
-    fileListHtml = '<div class="no-file">尚無檔案，請上傳</div>';
+  // 向 Apps Script 取得該格子的檔案清單
+  let files = [];
+  if (scriptUrl) {
+    try {
+      const res = await fetch(`${scriptUrl}?action=files&school=${encodeURIComponent(school)}&category=${encodeURIComponent(cat)}`);
+      const json = await res.json();
+      if (json.status === 'ok') files = json.files;
+    } catch(e) {}
   }
 
-  // 排隊中的檔案
-  const queuedHtml = queuedFiles.length > 0 ? `
-    <div class="queued-files">${queuedFiles.map((f,i) => `
-      <div class="qf">
-        <span>${getIcon(f.name)}</span>
-        <span class="qf-name">${f.name}</span>
-        <span style="font-size:11px;color:#666;flex-shrink:0;">${formatSize(f.size)}</span>
-        <button class="qf-rm" onclick="removeQueued(${i})">✕</button>
-      </div>
-    `).join('')}</div>
-  ` : '';
+  document.getElementById('modalSub').textContent = `已上傳 ${files.length} 個檔案`;
+  renderModal(files);
+}
 
-  body.innerHTML = `
-    ${fileListHtml}
+function renderModal(files) {
+  const { school, cat } = currentCell;
+  let html = '';
+
+  if (files.length > 0) {
+    html += files.map(f => `
+      <div class="file-entry">
+        <span class="fe-icon">${fileIcon(f.name)}</span>
+        <div class="fe-info">
+          <div class="fe-name">${f.name}</div>
+          <div class="fe-meta">${f.date} · ${f.size}</div>
+        </div>
+        <a class="fe-open" href="${f.url}" target="_blank">開啟 ↗</a>
+      </div>`).join('');
+  } else {
+    html += '<div class="no-file">尚無檔案</div>';
+  }
+
+  html += `
     <div class="upload-zone">
       <input type="file" multiple onchange="addQueued(this.files)">
-      <div style="font-size:28px;">📎</div>
-      <div class="upload-zone-main">點擊或拖曳新增檔案</div>
-      <div class="upload-zone-sub">PDF、Word、Excel、圖片，最大 50 MB</div>
+      <div class="uz-icon">📎</div>
+      <div class="uz-main">點擊或拖曳新增檔案</div>
+      <div class="uz-sub">PDF、Word、Excel、圖片，最大 50 MB</div>
     </div>
-    ${queuedHtml}
-    ${queuedFiles.length > 0 ? `
-      <button class="upload-btn" id="uploadBtn" onclick="doUpload()">上傳 ${queuedFiles.length} 個檔案至 Google Drive</button>
-    ` : ''}
-    <div class="prog-row" id="progRow" style="display:none">
+    <div class="queued" id="queuedList"></div>
+    <div id="uploadBtnWrap"></div>
+    <div class="prog-row" id="progRow">
       <div class="prog-bar2"><div class="prog-fill2" id="progFill2"></div></div>
       <div class="prog-txt2" id="progTxt2"></div>
     </div>
-    <div id="resultMsg"></div>
+    <div class="result-msg" id="resultMsg"></div>
   `;
+  document.getElementById('modalBody').innerHTML = html;
 }
 
 function addQueued(fileList) {
   Array.from(fileList).forEach(f => {
-    if (!queuedFiles.find(x => x.name === f.name && x.size === f.size)) {
-      queuedFiles.push(f);
-    }
+    if (!queuedFiles.find(x => x.name===f.name && x.size===f.size)) queuedFiles.push(f);
   });
-  renderModalBody();
+  updateQueueUI();
 }
 
-function removeQueued(i) { queuedFiles.splice(i, 1); renderModalBody(); }
-
-function removeFileEntry(i) {
-  const { school, cat } = currentCell;
-  data[school][cat].files.splice(i, 1);
-  if (data[school][cat].files.length === 0) data[school][cat].status = 'pending';
-  saveData(); renderTable(); renderModalBody();
+function updateQueueUI() {
+  const list = document.getElementById('queuedList');
+  const btnWrap = document.getElementById('uploadBtnWrap');
+  if (!list) return;
+  list.innerHTML = queuedFiles.map((f,i) => `
+    <div class="qf">
+      <span>${fileIcon(f.name)}</span>
+      <span class="qf-name">${f.name}</span>
+      <span class="qf-size">${fmtSize(f.size)}</span>
+      <button class="qf-rm" onclick="removeQ(${i})">✕</button>
+    </div>`).join('');
+  btnWrap.innerHTML = queuedFiles.length > 0
+    ? `<button class="upload-btn" id="uploadBtn" onclick="doUpload()">上傳 ${queuedFiles.length} 個檔案至 Google Drive</button>`
+    : '';
 }
+
+function removeQ(i) { queuedFiles.splice(i,1); updateQueueUI(); }
 
 async function doUpload() {
-  if (!scriptUrl) {
-    showResult('err', '❌ 請先填入 Apps Script 網址（頁面上方設定列）');
-    return;
-  }
-  if (queuedFiles.length === 0) return;
-
+  if (!scriptUrl) return showResult('err','❌ 請先填入 Apps Script 網址');
+  if (!queuedFiles.length) return;
   document.getElementById('uploadBtn').disabled = true;
   const { school, cat } = currentCell;
+  document.getElementById('progRow').style.display = 'block';
 
   for (let i = 0; i < queuedFiles.length; i++) {
-    const file = queuedFiles[i];
-    setProgress(Math.round(i / queuedFiles.length * 100), `上傳中 ${i+1}/${queuedFiles.length}：${file.name}`);
-
+    const f = queuedFiles[i];
+    setProgress(Math.round(i/queuedFiles.length*100), `上傳 ${i+1}/${queuedFiles.length}：${f.name}`);
     try {
-      const base64 = await toBase64(file);
+      const b64 = await toBase64(f);
       const res = await fetch(scriptUrl, {
         method: 'POST',
-        body: JSON.stringify({
-          school, category: cat,
-          fileName: file.name,
-          mimeType: file.type || 'application/octet-stream',
-          fileData: base64, note: ''
-        })
+        body: JSON.stringify({ school, category: cat, fileName: f.name, mimeType: f.type||'application/octet-stream', fileData: b64, note: '' })
       });
       const json = await res.json();
       if (json.status !== 'ok') throw new Error(json.message);
-
-      // 更新本地狀態
-      data[school][cat].files.push({
-        name: file.name,
-        size: formatSize(file.size),
-        date: new Date().toLocaleDateString('zh-TW'),
-        url: json.fileUrl || ''
-      });
-      data[school][cat].status = 'uploaded';
-
     } catch(err) {
-      setProgress(0, '');
-      showResult('err', `❌ 上傳失敗：${err.message}`);
+      showResult('err', '❌ 上傳失敗：' + err.message);
       document.getElementById('uploadBtn').disabled = false;
       return;
     }
   }
 
-  setProgress(100, '完成！');
-  saveData();
+  setProgress(100, '上傳完成！');
+  sheetData[school] = sheetData[school] || {};
+  sheetData[school][cat] = '已上傳';
   renderTable();
   queuedFiles = [];
-  setTimeout(() => {
-    showResult('ok', `✅ 成功上傳 ${data[school][cat].files.length} 個檔案！試算表狀態已更新。`);
-    renderModalBody();
-  }, 400);
+  showResult('ok', `✅ 上傳成功！試算表已自動更新為「已上傳」，並寄出通知信。`);
+  setTimeout(() => openCell(school, cat), 1200);
 }
 
 function setProgress(pct, txt) {
-  document.getElementById('progRow').style.display = 'block';
   document.getElementById('progFill2').style.width = pct + '%';
   document.getElementById('progTxt2').textContent = txt;
 }
@@ -412,39 +389,19 @@ function showResult(type, msg) {
   el.textContent = msg;
 }
 
-function syncAll() {
-  if (!scriptUrl) { alert('請先填入 Apps Script 網址'); return; }
-  alert('同步功能需透過 Apps Script 執行 syncDriveToSheet()，請至 Apps Script 手動執行或設定每日自動觸發。');
+function closeOverlay(e) { if (e.target === document.getElementById('overlay')) closeModal(); }
+function closeModal() { document.getElementById('overlay').classList.remove('open'); }
+
+function toBase64(f) {
+  return new Promise((res,rej) => { const r=new FileReader(); r.onload=()=>res(r.result.split(',')[1]); r.onerror=rej; r.readAsDataURL(f); });
 }
+function fileIcon(n) { const e=(n.split('.').pop()||'').toUpperCase(); if(e==='PDF')return'📄'; if(['DOC','DOCX'].includes(e))return'📝'; if(['XLS','XLSX'].includes(e))return'📊'; if(['JPG','JPEG','PNG'].includes(e))return'🖼️'; return'📁'; }
+function fmtSize(b) { if(b<1024*1024)return(b/1024).toFixed(1)+' KB'; return(b/1024/1024).toFixed(1)+' MB'; }
 
-function closeOverlay() { document.getElementById('overlay').classList.remove('open'); }
-function closeModal(e) { if (e.target === document.getElementById('overlay')) closeOverlay(); }
-
-function toBase64(file) {
-  return new Promise((res, rej) => {
-    const r = new FileReader();
-    r.onload = () => res(r.result.split(',')[1]);
-    r.onerror = rej;
-    r.readAsDataURL(file);
-  });
-}
-
-function getIcon(name) {
-  const ext = (name.split('.').pop() || '').toUpperCase();
-  if (ext === 'PDF') return '📄';
-  if (['DOC','DOCX'].includes(ext)) return '📝';
-  if (['XLS','XLSX'].includes(ext)) return '📊';
-  if (['JPG','JPEG','PNG'].includes(ext)) return '🖼️';
-  return '📁';
-}
-
-function formatSize(bytes) {
-  if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
-  return (bytes/1024/1024).toFixed(1) + ' MB';
-}
-
-loadData();
-renderTable();
+// 啟動
+if (scriptUrl) document.getElementById('scriptUrlInput').value = scriptUrl;
+initTable();
+if (scriptUrl) loadStatus();
 </script>
 </body>
 </html>
