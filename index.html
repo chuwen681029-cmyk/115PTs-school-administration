@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>115學年 行政資料上傳</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; background: #F5F5F5; min-height: 100vh; padding: 24px 16px; }
+  .container { max-width: 560px; margin: 0 auto; }
+  .header { background: #185FA5; color: #fff; border-radius: 12px 12px 0 0; padding: 20px 24px; }
+  .header h1 { font-size: 18px; font-weight: 500; }
+  .header p { font-size: 13px; opacity: 0.8; margin-top: 4px; }
+  .card { background: #fff; border: 0.5px solid #e0e0e0; padding: 20px 24px; }
+  .card:last-of-type { border-radius: 0 0 12px 12px; }
+  .field { margin-bottom: 16px; }
+  label { display: block; font-size: 13px; font-weight: 500; color: #444; margin-bottom: 6px; }
+  .req { color: #A32D2D; margin-left: 3px; }
+  select, input[type=text] { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; color: #222; background: #fff; appearance: none; -webkit-appearance: none; }
+  select:focus, input[type=text]:focus { outline: none; border-color: #185FA5; box-shadow: 0 0 0 3px rgba(24,95,165,0.12); }
+  .upload-area { border: 2px dashed #B5D4F4; border-radius: 10px; padding: 28px 16px; text-align: center; cursor: pointer; transition: background 0.15s; position: relative; }
+  .upload-area:hover, .upload-area.drag { background: #EBF4FD; border-color: #185FA5; }
+  .upload-area input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  .upload-icon { font-size: 32px; margin-bottom: 8px; }
+  .upload-main { font-size: 14px; color: #185FA5; font-weight: 500; }
+  .upload-sub { font-size: 12px; color: #888; margin-top: 4px; }
+  .file-list { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+  .file-item { display: flex; align-items: center; gap: 10px; background: #F0F7FF; border: 1px solid #B5D4F4; border-radius: 8px; padding: 9px 12px; }
+  .file-item-icon { font-size: 18px; flex-shrink: 0; }
+  .file-item-name { flex: 1; font-size: 13px; color: #222; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .file-item-size { font-size: 11px; color: #888; flex-shrink: 0; }
+  .file-remove { background: none; border: none; color: #A32D2D; font-size: 16px; cursor: pointer; flex-shrink: 0; padding: 0 4px; }
+  .divider { border: none; border-top: 1px solid #eee; margin: 4px 0 16px; }
+  .btn-submit { width: 100%; padding: 13px; background: #185FA5; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; transition: background 0.15s; }
+  .btn-submit:hover { background: #0C447C; }
+  .btn-submit:disabled { background: #aaa; cursor: not-allowed; }
+  .progress-wrap { display: none; margin-top: 14px; }
+  .progress-bar { height: 8px; background: #e0e0e0; border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; background: #185FA5; border-radius: 99px; width: 0%; transition: width 0.3s; }
+  .progress-txt { font-size: 12px; color: #666; margin-top: 6px; text-align: center; }
+  .result { display: none; border-radius: 8px; padding: 14px 16px; margin-top: 14px; font-size: 14px; line-height: 1.5; }
+  .result.success { background: #EAF3DE; border: 1px solid #97C459; color: #27500A; }
+  .result.error { background: #FCEBEB; border: 1px solid #F09595; color: #791F1F; }
+  .hint-box { background: #FFF8E6; border: 1px solid #FAC775; border-radius: 8px; padding: 12px 14px; font-size: 12px; color: #633806; line-height: 1.6; margin-bottom: 16px; }
+  .school-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 6px; }
+  .school-btn { padding: 8px 4px; border: 1px solid #ddd; border-radius: 8px; background: #fff; font-size: 13px; color: #444; cursor: pointer; text-align: center; transition: all 0.15s; }
+  .school-btn:hover { border-color: #185FA5; color: #185FA5; background: #EBF4FD; }
+  .school-btn.selected { border-color: #185FA5; background: #185FA5; color: #fff; font-weight: 500; }
+  .cat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-top: 6px; }
+  .cat-btn { padding: 10px 8px; border: 1px solid #ddd; border-radius: 8px; background: #fff; font-size: 13px; color: #444; cursor: pointer; text-align: center; transition: all 0.15s; }
+  .cat-btn:hover { border-color: #185FA5; color: #185FA5; background: #EBF4FD; }
+  .cat-btn.selected { border-color: #185FA5; background: #185FA5; color: #fff; font-weight: 500; }
+  .hidden-input { display: none !important; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>📂 115學年 行政資料上傳</h1>
+    <p>物理治療科教學組 · 請選擇學校與文件類別後上傳</p>
+  </div>
+
+  <div class="card">
+    <div class="hint-box">
+      ⚠️ 首次使用前，請先完成 Apps Script 部署（見說明文件），取得上傳網址後填入下方設定。
+    </div>
+
+    <div class="field">
+      <label>Apps Script 網址 <span class="req">*</span></label>
+      <input type="text" id="scriptUrl" placeholder="https://script.google.com/macros/s/YOUR_ID/exec" />
+      <div style="font-size:11px;color:#888;margin-top:4px;">部署為網頁應用程式後，複製網址貼於此</div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="field">
+      <label>選擇學校 <span class="req">*</span></label>
+      <div class="school-grid" id="schoolGrid"></div>
+      <input type="hidden" id="selectedSchool">
+    </div>
+
+    <div class="field">
+      <label>文件類別 <span class="req">*</span></label>
+      <div class="cat-grid" id="catGrid"></div>
+      <input type="hidden" id="selectedCat">
+    </div>
+
+    <div class="field">
+      <label>備註（選填）</label>
+      <input type="text" id="note" placeholder="例：113學年合約正本、更新版" />
+    </div>
+
+    <div class="field">
+      <label>選擇檔案 <span class="req">*</span></label>
+      <div class="upload-area" id="uploadArea">
+        <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
+        <div class="upload-icon">📎</div>
+        <div class="upload-main">點擊或拖曳檔案至此</div>
+        <div class="upload-sub">PDF、Word、Excel、圖片，每檔最大 50 MB</div>
+      </div>
+      <div class="file-list" id="fileList"></div>
+    </div>
+
+    <button class="btn-submit" id="submitBtn" onclick="submitFiles()">上傳至 Google Drive</button>
+
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-txt" id="progressTxt">準備上傳…</div>
+    </div>
+
+    <div class="result" id="resultBox"></div>
+  </div>
+</div>
+
+<script>
+const SCHOOLS = ['高醫','中山','慈濟','亞大','義守','弘光','輔英','慈惠','樹人','仁德'];
+const CATEGORIES = ['實習合約','實習名單','實習手冊','實習費用','學校座談會','實習成績寄發','其它'];
+const ICONS = { '實習合約':'📄','實習名單':'👥','實習手冊':'📘','實習費用':'💰','學校座談會':'🗣️','實習成績寄發':'📮','其它':'📁' };
+
+let selectedFiles = [];
+
+// 建立學校按鈕
+const schoolGrid = document.getElementById('schoolGrid');
+SCHOOLS.forEach(s => {
+  const btn = document.createElement('button');
+  btn.className = 'school-btn';
+  btn.textContent = s;
+  btn.onclick = () => {
+    document.querySelectorAll('.school-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    document.getElementById('selectedSchool').value = s;
+  };
+  schoolGrid.appendChild(btn);
+});
+
+// 建立類別按鈕
+const catGrid = document.getElementById('catGrid');
+CATEGORIES.forEach(c => {
+  const btn = document.createElement('button');
+  btn.className = 'cat-btn';
+  btn.textContent = (ICONS[c] || '📁') + ' ' + c;
+  btn.onclick = () => {
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    document.getElementById('selectedCat').value = c;
+  };
+  catGrid.appendChild(btn);
+});
+
+// 檔案選取
+document.getElementById('fileInput').addEventListener('change', function() {
+  Array.from(this.files).forEach(addFile);
+});
+
+// 拖曳
+const area = document.getElementById('uploadArea');
+area.addEventListener('dragover', e => { e.preventDefault(); area.classList.add('drag'); });
+area.addEventListener('dragleave', () => area.classList.remove('drag'));
+area.addEventListener('drop', e => {
+  e.preventDefault(); area.classList.remove('drag');
+  Array.from(e.dataTransfer.files).forEach(addFile);
+});
+
+function addFile(file) {
+  if (selectedFiles.find(f => f.name === file.name && f.size === file.size)) return;
+  selectedFiles.push(file);
+  renderFileList();
+}
+
+function removeFile(idx) {
+  selectedFiles.splice(idx, 1);
+  renderFileList();
+}
+
+function renderFileList() {
+  const list = document.getElementById('fileList');
+  list.innerHTML = '';
+  selectedFiles.forEach((f, i) => {
+    const ext = f.name.split('.').pop().toUpperCase();
+    const size = f.size < 1024*1024 ? (f.size/1024).toFixed(1)+' KB' : (f.size/1024/1024).toFixed(1)+' MB';
+    const item = document.createElement('div');
+    item.className = 'file-item';
+    item.innerHTML = `
+      <span class="file-item-icon">${getFileIcon(ext)}</span>
+      <span class="file-item-name">${f.name}</span>
+      <span class="file-item-size">${size}</span>
+      <button class="file-remove" onclick="removeFile(${i})" title="移除">✕</button>
+    `;
+    list.appendChild(item);
+  });
+}
+
+function getFileIcon(ext) {
+  if (['PDF'].includes(ext)) return '📄';
+  if (['DOC','DOCX'].includes(ext)) return '📝';
+  if (['XLS','XLSX'].includes(ext)) return '📊';
+  if (['JPG','JPEG','PNG'].includes(ext)) return '🖼️';
+  return '📁';
+}
+
+async function submitFiles() {
+  const scriptUrl = document.getElementById('scriptUrl').value.trim();
+  const school = document.getElementById('selectedSchool').value;
+  const cat = document.getElementById('selectedCat').value;
+  const note = document.getElementById('note').value.trim();
+
+  if (!scriptUrl) return showResult('error', '請填入 Apps Script 網址');
+  if (!school) return showResult('error', '請選擇學校');
+  if (!cat) return showResult('error', '請選擇文件類別');
+  if (selectedFiles.length === 0) return showResult('error', '請選擇至少一個檔案');
+
+  document.getElementById('submitBtn').disabled = true;
+  showProgress(0, '準備上傳…');
+
+  try {
+    let successCount = 0;
+    for (let i = 0; i < selectedFiles.length; i++) {
+      const file = selectedFiles[i];
+      const pct = Math.round(((i) / selectedFiles.length) * 100);
+      showProgress(pct, `上傳中 ${i+1}/${selectedFiles.length}：${file.name}`);
+
+      const base64 = await toBase64(file);
+      const payload = {
+        school: school,
+        category: cat,
+        note: note,
+        fileName: file.name,
+        mimeType: file.type || 'application/octet-stream',
+        fileData: base64,
+      };
+
+      const res = await fetch(scriptUrl, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+      const json = await res.json();
+      if (json.status === 'ok') successCount++;
+      else throw new Error(json.message || '上傳失敗');
+    }
+
+    showProgress(100, '上傳完成！');
+    showResult('success', `✅ 成功上傳 ${successCount} 個檔案至「${school} / ${cat}」！\n\n試算表狀態已自動更新為「已上傳」。`);
+    selectedFiles = [];
+    renderFileList();
+  } catch(err) {
+    showResult('error', '❌ 上傳失敗：' + err.message + '\n\n請確認 Apps Script 網址是否正確，或重新整理後再試。');
+  }
+
+  document.getElementById('submitBtn').disabled = false;
+}
+
+function toBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+function showProgress(pct, txt) {
+  document.getElementById('progressWrap').style.display = 'block';
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressTxt').textContent = txt;
+}
+
+function showResult(type, msg) {
+  const box = document.getElementById('resultBox');
+  box.className = 'result ' + type;
+  box.style.display = 'block';
+  box.style.whiteSpace = 'pre-line';
+  box.textContent = msg;
+  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+</script>
+</body>
+</html>
